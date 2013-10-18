@@ -1,0 +1,4 @@
+This is a fork of Eli Bendersky's pycparser project for parsing C code with python.
+You can find the original project here: https://github.com/eliben/pycparser
+
+The fork is due to me needing some extra functionality for some non-standard C tokens
