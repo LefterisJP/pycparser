@@ -11,7 +11,7 @@
 #
 # AST Node classes.
 #
-# Copyright (C) 2008-2012, Eli Bendersky
+# Copyright (C) 2008-2013, Eli Bendersky
 # License: BSD
 #-----------------------------------------------------------------
 
@@ -441,6 +441,32 @@ class FuncCall(Node):
         nodelist = []
         if self.name is not None: nodelist.append(("name", self.name))
         if self.args is not None: nodelist.append(("args", self.args))
+        return tuple(nodelist)
+
+    attr_names = ()
+
+class RFTemplateFuncCall(Node):
+    def __init__(self, name, args, coord=None):
+        self.name = name
+        self.args = args
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.name is not None: nodelist.append(("name", self.name))
+        if self.args is not None: nodelist.append(("args", self.args))
+        return tuple(nodelist)
+
+    attr_names = ()
+
+class RFTemplateKeyword(Node):
+    def __init__(self, name, coord=None):
+        self.name = name
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.name is not None: nodelist.append(("name", self.name))
         return tuple(nodelist)
 
     attr_names = ()

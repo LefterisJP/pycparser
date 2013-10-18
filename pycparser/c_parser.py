@@ -89,7 +89,7 @@ class CParser(PLYParser):
             'specifier_qualifier_list',
             'block_item_list',
             'type_qualifier_list',
-            'struct_declarator_list'
+            'struct_declarator_list',
         ]
 
         for rule in rules_with_opt:
@@ -1472,6 +1472,7 @@ class CParser(PLYParser):
         """
         p[0] = p[1]
 
+
     def p_postfix_expression_1(self, p):
         """ postfix_expression  : primary_expression """
         p[0] = p[1]
@@ -1506,6 +1507,22 @@ class CParser(PLYParser):
                                 | LPAREN type_name RPAREN brace_open initializer_list COMMA brace_close
         """
         p[0] = c_ast.CompoundLiteral(p[2], p[5])
+
+
+
+    def p_postfix_expression_7(self, p):
+        """ postfix_expression : rf_template_keyword LPAREN argument_expression_list RPAREN
+                               | rf_template_keyword LPAREN RPAREN
+        """
+        p[0] = c_ast.RFTemplateFuncCall(p[1], p[3] if len (p) == 5 else None, p[1].coord)
+
+    def p_rf_template_keyword(self, p):
+        """ rf_template_keyword : RF_TEMPLATE_KEYWORD """
+        p[0] = c_ast.RFTemplateKeyword(p[1], self._coord(p.lineno(1)))
+
+
+
+
 
     def p_primary_expression_1(self, p):
         """ primary_expression  : identifier """
