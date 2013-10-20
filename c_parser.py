@@ -372,7 +372,6 @@ class CParser(PLYParser):
         # problem can occur where the identifier gets grouped into
         # spec['type'], leaving decl as None.  This can only occur for the
         # first declarator.
-        #
         elif decls[0]['decl'] is None:
             if len(spec['type']) < 2 or len(spec['type'][-1].names) != 1 or \
                     not self._is_type_in_scope(spec['type'][-1].names[0]):
@@ -545,6 +544,7 @@ class CParser(PLYParser):
         """
         self._parse_error('Directives not supported yet',
             self._coord(p.lineno(1)))
+
 
     # In function definitions, the declarator can be followed by
     # a declaration list, for old "K&R style" function definitios.
@@ -723,6 +723,7 @@ class CParser(PLYParser):
         """ type_specifier  : typedef_name
                             | enum_specifier
                             | struct_or_union_specifier
+                            | rf_template_keyword
         """
         p[0] = p[1]
 
@@ -782,6 +783,7 @@ class CParser(PLYParser):
     def p_struct_or_union_specifier_1(self, p):
         """ struct_or_union_specifier   : struct_or_union ID
                                         | struct_or_union TYPEID
+                                        | struct_or_union rf_template_keyword
         """
         klass = self._select_struct_union_class(p[1])
         p[0] = klass(
@@ -801,6 +803,7 @@ class CParser(PLYParser):
     def p_struct_or_union_specifier_3(self, p):
         """ struct_or_union_specifier   : struct_or_union ID brace_open struct_declaration_list brace_close
                                         | struct_or_union TYPEID brace_open struct_declaration_list brace_close
+                                        | struct_or_union rf_template_keyword brace_open struct_declaration_list brace_close
         """
         klass = self._select_struct_union_class(p[1])
         p[0] = klass(
@@ -1515,6 +1518,11 @@ class CParser(PLYParser):
                                | rf_template_keyword LPAREN RPAREN
         """
         p[0] = c_ast.RFTemplateFuncCall(p[1], p[3] if len (p) == 5 else None, p[1].coord)
+
+    def p_postfix_expression_8(self, p):
+        """ postfix_expression : rf_template_keyword
+        """
+        p[0] = p[1]
 
     def p_rf_template_keyword(self, p):
         """ rf_template_keyword : RF_TEMPLATE_KEYWORD """

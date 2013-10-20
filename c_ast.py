@@ -466,10 +466,9 @@ class RFTemplateKeyword(Node):
 
     def children(self):
         nodelist = []
-        if self.name is not None: nodelist.append(("name", self.name))
         return tuple(nodelist)
 
-    attr_names = ()
+    attr_names = ('name',)
 
 class FuncDecl(Node):
     def __init__(self, args, type, coord=None):
